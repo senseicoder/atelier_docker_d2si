@@ -1,0 +1,27 @@
+version: "2"
+
+services:
+
+  web: 
+    image: owncloud_web
+    build: owncloud
+    volumes:
+    - /var/lib/mysql
+    ports: 
+    - "8080:80"
+
+  db:
+    image: owncloud_mariadb
+    build: mariadb
+    volumes:
+    - /var/lib/mysql
+    ports:
+    - "8306:3306"
+
+  redis:
+    image: owncloud_redis
+    build: redis
+    volumes:
+    - /var/lib/redis
+    ports:
+    - "6379:6379"
