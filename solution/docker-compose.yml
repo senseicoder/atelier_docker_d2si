@@ -1,0 +1,67 @@
+version: '2'
+
+services:
+  cache:
+    build: redis
+    container_name: training-cache
+    expose:
+      - 6379
+    volumes:
+      - cachedata:/var/lib/redis
+    networks:
+      - data
+
+  db:
+    build: mariadb
+    container_name: training-db
+    expose:
+      - 3306
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - data
+
+  www1:
+    build: owncloud
+    container_name: training-www1
+    expose:
+      - 80
+    volumes:
+      - wwwdata:/var/www/html/owncloud/data:rw
+    networks:
+      - data
+      - front
+
+  www2:
+    build: owncloud
+    container_name: training-www2
+    expose:
+      - 80
+    volumes:
+      - wwwdata:/var/www/html/owncloud/data:rw
+    networks:
+      - data
+      - front
+
+  lb:
+    build: haproxy
+    container_name: training-lb
+    ports:
+      - 80:80
+    # we should *NOT* need this, but haproxy NS resolution is broken
+    links:
+      - www1
+      - www2
+    networks:
+      - front
+
+volumes:
+    cachedata:
+    dbdata:
+    wwwdata:
+
+networks:
+  front:
+    driver: bridge
+  data:
+    driver: bridge
