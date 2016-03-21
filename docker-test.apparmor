@@ -1,0 +1,11 @@
+# BEGIN ANSIBLE MANAGED BLOCK
+#include <tunables/global>
+
+profile docker-test flags=(attach_disconnected,mediate_deleted) {
+  #include <abstractions/base>
+  file,
+
+  audit deny /etc/** wl,
+  audit deny /usr/bin/top x,
+}
+# END ANSIBLE MANAGED BLOCK
